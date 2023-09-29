@@ -40,7 +40,7 @@ const getUser = async(email)=>{
   const getUserQuery = `SELECT * FROM users WHERE email = ?`;
   try{
     const result = await sql.query(getUserQuery,[email]);
-    return result[0][0]
+    return result[0][0];
   } catch(err){
     throw err;
   }
@@ -54,5 +54,14 @@ const getAllUsers = async(email)=>{
     throw err;
   }
 }
-
-module.exports = {createUser, isEmailExist,getUser,getAllUsers}
+const makeUserInstructor = async(email)=>{
+  try{
+  const makeUserInstructorQuery = `UPDATE USERS
+  SET isInstructor = false;
+  where email =${email}`;
+    await sql.query(makeUserInstructorQuery,[email]);
+  }catch(err){
+    throw err;
+  }
+}
+module.exports = {createUser, isEmailExist,getUser,getAllUsers,makeUserInstructor}

@@ -5,7 +5,7 @@ const createUserCourseController  =async(req,res)=>{
         if(isUserHasCourse(req.body)){
             return res.status(400).json('User already have course')
         }
-        await createUserCourse(req.body);
+         await createUserCourse(req.body);
         return res.status(200).json("Course added successfully");
     }catch(err){
         return res.status(500).json('Internal Server Error');

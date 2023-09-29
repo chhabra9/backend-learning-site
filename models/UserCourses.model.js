@@ -1,19 +1,28 @@
 const sql = require('../config/db.config');
-const createUserCourse=async ({email,courseId})=>{
-    const createUserCourseQuery =`
-    INSERT INTO UserCourses (email, course_id, purchase_date)  
-    VALUES(?, ?, ?)
-    `;
-    const date =  new Date().date;
-  const values = [
-      email,courseId,date ||null
-    ];
-   try{
-      await sql.query(createUserCourseQuery,values);
-   }catch(err){
-        throw err;
+const createUserCourses = async (email, courseIds ) => {
+   const createUserCourseQuery = `
+       INSERT INTO UserCourses (email, course_id, purchase_date)  
+       VALUES (?, ?, ?)
+   `;
+   
+   const date = new Date(); // Use the current date and time
+   const formattedDate = date.toISOString().slice(0, 19).replace('T', ' '); // Format the date as a string
+
+   try {
+       for (const courseId of courseIds) {
+           const values = [
+               email,
+               courseId,
+               formattedDate
+           ];
+           
+           await sql.query(createUserCourseQuery, values);
+       }
+   } catch (err) {
+       throw err;
    }
 }
+
 const isUserHasCourse = async({email,courseId})=>{
    const query  = `SELECT EXISTS(SELECT * FROM UserCourses 
       WHERE email = ? AND course_id = ?) AS COURSEEXIST;`
@@ -33,4 +42,4 @@ const getUserCourses = async (email)=>{
       throw err;
    }
 }
-module.exports = {createUserCourse,isUserHasCourse,getUserCourses};
+module.exports = {createUserCourses,isUserHasCourse,getUserCourses};

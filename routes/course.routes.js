@@ -1,6 +1,6 @@
 
 const router = require('express').Router();
-const {verifyTokenAndUser} = require('../services/verifyToken');
+const {verifyTokenAndUser, verifyTokenAndInstructor} = require('../services/verifyToken');
 const {
      createNewCourseController,
      getInstructorCoursesController,
@@ -10,7 +10,7 @@ const {
  } = require('../controller/course.controller');
 
 router.post('/',createNewCourseController);
-router.get('instructor/:instructorId',getInstructorCoursesController);
+router.get('/instructor/:instructorId',verifyTokenAndInstructor,getInstructorCoursesController);
 router.get('/',getAllCoursesController);
 router.get('/:courseId',getCourseWithCourseIdController);
 

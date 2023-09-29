@@ -1,6 +1,6 @@
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const {createUserCourse} = require('../models/UserCourses.model');
+const {createUserCourses} = require('../models/UserCourses.model');
 const createPayementIntentController  = async(req,res)=>{
     const items = req.body;
     const paymentIntent  = await stripe.paymentIntents.create({
@@ -13,11 +13,15 @@ const createPayementIntentController  = async(req,res)=>{
 }
 const createCheckOutSessionController =  async (req, res) => {
 try{
-    const data = req.body.map((item)=>{
+  let courseIds =req.body.courses.map((item)=>{
+    return item.course_id
+  })
+  let sCourseIds = JSON.stringify(courseIds);
+    const data = req.body.courses.map((item)=>{
         return {
             price_data: {
               currency: 'inr',
-              unit_amount: item.price*100,
+              unit_amount: item.price*100+(item.price*100*0.18),
               product_data: {
                 name: item.title,
                 description: item.description,
@@ -25,18 +29,19 @@ try{
             },
             quantity: 1,
           }
-    })
-    const session = await stripe.checkout.sessions.create({
-        line_items: data,
+        })
+        const session = await stripe.checkout.sessions.create({
+          line_items: data,
+          tax_id_collection: {
+            enabled: true,
+          },
         mode: 'payment',
         success_url: 'http://localhost:4200',
         cancel_url: 'http://localhost:4200',
         metadata:{
-            email:req.query.email,
-            course_ids:req.body[0].course_id,
-        
+            email:req.body.email,
+             course_ids:sCourseIds,
         }
-
       });
     res.status(200).json({url:session.url})
 }catch(err){
@@ -62,9 +67,9 @@ try{
     // Return a response to acknowledge receipt of the event
     response.json({received: true});
     if(checkout){
-        const courseId = event.data.object.metadata.course_ids;
+        let courseId =JSON.parse( event.data.object.metadata.course_ids);
         const email = event.data.object.metadata.email
-        await createUserCourse({email,courseId});
+       await createUserCourses(email,courseId);
     }
   };
 module.exports = {createPayementIntentController,createCheckOutSessionController,webHookController};

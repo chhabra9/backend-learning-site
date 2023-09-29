@@ -45,7 +45,6 @@ const getCourseWithCourseIdController  = async(req,res)=>{
     }   
 }
 
-//manage user courses
 
 
 module.exports = {

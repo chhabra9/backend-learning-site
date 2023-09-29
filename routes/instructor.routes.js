@@ -1,5 +1,7 @@
 
 const router = require('express').Router();
-const { createNewInstructor } = require('../controller/instructor.contoller');
-router.post('/',createNewInstructor)
+const { createNewInstructorController } = require('../controller/instructor.contoller');
+const {verifyTokenAndUser, verifyTokenAndInstructor} =require('../services/verifyToken');
+router.post('/',verifyTokenAndUser,createNewInstructorController);
+// router.get('/',verifyTokenAndInstructor);
 module.exports = router;

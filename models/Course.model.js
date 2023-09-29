@@ -18,10 +18,8 @@ const getInstructorCourses = async(instructorId)=>{
     try{
         const getInstructorCoursesQuery = `SELECT * FROM Course where instructor_id = ?`;
         const result = await sql.query(getInstructorCoursesQuery,[instructorId]);
-        console.log(result);
         return result[0]
     } catch(err){
-        console.log(err.message)
         throw err;
     }
 }
@@ -30,7 +28,6 @@ const getInstructorCourses = async(instructorId)=>{
     try{
         const getInstructorCoursesQuery = `SELECT * FROM Course`;
         const result = await sql.query(getInstructorCoursesQuery);
-        console.log(result);
         return result[0]
     } catch(err){
         // err.message = 'Internal Server Error'
@@ -42,10 +39,8 @@ const getCourseWithCourseId = async(courseId)=>{
     try{
         const getInstructorCoursesQuery = `SELECT * FROM Course where course_id = ?`;
         const result = await sql.query(getInstructorCoursesQuery,[courseId]);
-        console.log(result);
         return result[0]
     } catch(err){
-        console.log(err.message)
         throw err;
     }
 }

@@ -1,5 +1,6 @@
 const {isEmailExist,createUser,getUser} = require('../models/user.model');
 const {validationResult} = require('express-validator');
+const {getInstructorId} = require('../models/Instructor.model');
 const jwt = require('jsonwebtoken');
 const signupUser  = async (req,res)=>{
    const validationRes = validationResult(req);
@@ -32,7 +33,14 @@ const loginUser = async(req,res)=>{
         if(user.password ===req.body.password){
             const {password,...payloadUser} = user;
             const token = jwt.sign(payloadUser,process.env.ACCESS_TOKEN_SECRET);
-            return res.status(200).json({email:payloadUser.email,access_token:token,isInstructor:payloadUser.isInstructor})
+                if(payloadUser.isInstructor ===1){
+                  const instructorId=await getInstructorId(req.body.email);
+                  return res.status(200).json({email:payloadUser.email,access_token:token,isInstructor:payloadUser.isInstructor,instructorId:instructorId})
+                }
+                else{
+                    return res.status(200).json({email:payloadUser.email,access_token:token,isInstructor:payloadUser.isInstructor})
+
+                }
         }else{
             return res.status(401).json('Invalid email/password');
         }
