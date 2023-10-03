@@ -4,13 +4,14 @@ const {validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
 const createNewInstructorController  = async (req,res)=>{
     try {
-        const {email} = req.body;
-        const isExist = await isInstructorWithEmailExist(email);
+        const userId = req.params.user_id;
+        const isExist = await isInstructorWithEmailExist(userId);
         if (isExist) {
             return res.status(400).json('Email already exists');
-        } else {
-            await createInstructor(req.body);
-            makeUserInstructor(email);
+        } 
+        else {
+            await createInstructor({...req.body,userId});
+            await makeUserInstructor(userId);
            return res.status(200).json("Instructor Created Successfully");
         }
 

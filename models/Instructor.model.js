@@ -1,12 +1,12 @@
 const sql = require('../config/db.config');
 
 const isInstructorWithEmailExist =  async(email)=>{
-    const isExistQuery = 'SELECT EXISTS(SELECT 1 FROM Instructor WHERE email = ?) AS email_exists';
+    const isExistQuery = 'SELECT EXISTS(SELECT 1 FROM Instructor WHERE user_id = ?) AS user_exists';
     try{
       const result =  await sql.query(isExistQuery,[email]);
-      const emailExists = result[0][0].email_exists === 1;
+      const userExists = result[0][0].user_existss === 1;
       console
-      if (emailExists) {
+      if (userExists) {
         return true;
         } else {
           return false;
@@ -15,10 +15,10 @@ const isInstructorWithEmailExist =  async(email)=>{
       throw err;
     }
 }
-const getInstructorId =async(email)=>{
- const getInstructorIdQuery =  `Select instructor_id from Instructor where email=?`;
+const getInstructorId =async(userId)=>{
+ const getInstructorIdQuery =  `Select instructor_id from Instructor where user_id=?`;
  try{
-  const result = await  sql.query(getInstructorIdQuery,[email]);
+  const result = await  sql.query(getInstructorIdQuery,[userId]);
   return result[0][0].instructor_id;
  }catch(err){
     throw err;
@@ -40,15 +40,15 @@ const isInstructorExist = async(instructorId)=>{
 }
 const createInstructor =async (instructorDetails)=>{
     const createInstructorQuery =`
-    INSERT INTO Instructor (email, qualification, certifications, experience)
+    INSERT INTO Instructor (user_id, qualification, certifications, experience)
     VALUES (?, ?, ?, ?)
   `;
   const values = [
-    instructorDetails.email, instructorDetails.qualification , instructorDetails.certifications||null,instructorDetails.experience
+    instructorDetails.userId, instructorDetails.qualification , instructorDetails.certifications||null,instructorDetails.experience
     ];
+
    try{
         const createdInstructor = await sql.query(createInstructorQuery,values);
-        return createdInstructor;
    }catch(err){
         throw err;
    }

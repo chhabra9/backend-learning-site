@@ -10,22 +10,15 @@ const verifyToken =(req,res,next)=>{
         if(err){
             return res.status(403).json("You are not authenticated");
         }
-        
-        req.user = user;
-        next()
+        req.abcd = user;
+        next(user)
     })
     }
-const verifyTokenAndUser = (req,res,next)=>{
-    verifyToken(req,res,()=>{
-        if(req.method ==="POST"){
-        if(req.body.email !== req.user.email){
-            return res.status(403).json("You are not allow do that");
-        }
-    }
-        else if(req.method ==="GET"){
-            if(req.query.email !== req.user.email){
+const verifyTokenAndUser = async(req,res,next)=>{
+    await verifyToken(req,res,(user)=>{
+           const userId = parseInt(req.params.user_id)
+            if(userId !== user.user_id){
                 return res.status(403).json("You are not allow do that");
-        }
     }
     next();
     })
@@ -33,7 +26,6 @@ const verifyTokenAndUser = (req,res,next)=>{
 const verifyTokenAndInstructor = async(req,res,next)=>{
     verifyToken(req,res,async ()=>{
             try{
-
                 const instructorId = req.params.instructorId
                 const isExist = await isInstructorExist(instructorId);
                 if(isExist)

@@ -39,7 +39,7 @@ try{
         success_url: 'http://localhost:4200',
         cancel_url: 'http://localhost:4200',
         metadata:{
-            email:req.body.email,
+            userId:req.params.user_id,
              course_ids:sCourseIds,
         }
       });
@@ -68,8 +68,8 @@ try{
     response.json({received: true});
     if(checkout){
         let courseId =JSON.parse( event.data.object.metadata.course_ids);
-        const email = event.data.object.metadata.email
-       await createUserCourses(email,courseId);
+        const userId = event.data.object.metadata.userId
+       await createUserCourses(userId,courseId);
     }
   };
 module.exports = {createPayementIntentController,createCheckOutSessionController,webHookController};

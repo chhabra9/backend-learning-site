@@ -8,6 +8,7 @@ const instructorRoute = require('./routes/instructor.routes');
 const courseRoute = require('./routes/course.routes');
 const userCourseRoute = require('./routes/useraCourse.routes');
 const stirpeRoute = require('./routes/stripePayement.routes');
+const cartRoute = require('./routes/cart.routes');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -22,6 +23,7 @@ app.use('/api/instructor',instructorRoute);
 app.use('/api/course',courseRoute);
 app.use('/api/userCourse',userCourseRoute);
 app.use('/api/payment',stirpeRoute);
+app.use('/api/cart',cartRoute)
 app.listen(port ,()=>{
     console.log("listining on port ",port);
 })

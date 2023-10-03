@@ -14,4 +14,5 @@ router.get('/instructor/:instructorId',verifyTokenAndInstructor,getInstructorCou
 router.get('/',getAllCoursesController);
 router.get('/:courseId',getCourseWithCourseIdController);
 
+
 module.exports = router;

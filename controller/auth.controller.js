@@ -21,7 +21,6 @@ const signupUser  = async (req,res)=>{
     }
 }
 const loginUser = async(req,res)=>{
-
     const validationRes =  validationResult(req);
     if(validationRes.errors.length){
       return res.status(400).json('Invalid data in the request body')
@@ -32,13 +31,15 @@ const loginUser = async(req,res)=>{
         const user = await getUser(req.body.email);
         if(user.password ===req.body.password){
             const {password,...payloadUser} = user;
-            const token = jwt.sign(payloadUser,process.env.ACCESS_TOKEN_SECRET);
-                if(payloadUser.isInstructor ===1){
-                  const instructorId=await getInstructorId(req.body.email);
-                  return res.status(200).json({email:payloadUser.email,access_token:token,isInstructor:payloadUser.isInstructor,instructorId:instructorId})
+            if(payloadUser.isInstructor ===1){
+                const instructorId=await getInstructorId(payloadUser.user_id);
+                const tokenInput = {...payloadUser,instructorId:instructorId};
+                const token = jwt.sign(tokenInput,process.env.ACCESS_TOKEN_SECRET);
+                  return res.status(200).json({user_id:payloadUser.user_id,access_token:token,instructorId:instructorId})
                 }
                 else{
-                    return res.status(200).json({email:payloadUser.email,access_token:token,isInstructor:payloadUser.isInstructor})
+                    const token = jwt.sign(payloadUser,process.env.ACCESS_TOKEN_SECRET);
+                    return res.status(200).json({user_id:payloadUser.user_id,access_token:token})
 
                 }
         }else{

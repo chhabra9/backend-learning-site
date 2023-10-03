@@ -14,7 +14,7 @@ const createUserCourseController  =async(req,res)=>{
 const getUserCoursesController = async(req,res)=>{
 
     try{
-        const result  = await getUserCourses(req.query.email);
+        const result  = await getUserCourses(req.params.user_id);
         return res.status(200).json(result);
     }catch(err){
         return res.status(500).json('Internal Server Error');

@@ -1,17 +1,17 @@
 const sql = require('../config/db.config');
-const createUserCourses = async (email, courseIds ) => {
+const createUserCourses = async (user_id, courseIds ) => {
    const createUserCourseQuery = `
-       INSERT INTO UserCourses (email, course_id, purchase_date)  
+       INSERT INTO UserCourse (user_id, course_id, purchase_date)  
        VALUES (?, ?, ?)
    `;
    
-   const date = new Date(); // Use the current date and time
-   const formattedDate = date.toISOString().slice(0, 19).replace('T', ' '); // Format the date as a string
+   const date = new Date(); 
+   const formattedDate = date.toISOString().slice(0, 19).replace('T', ' '); 
 
    try {
        for (const courseId of courseIds) {
            const values = [
-               email,
+               user_id,
                courseId,
                formattedDate
            ];
@@ -33,10 +33,10 @@ const isUserHasCourse = async({email,courseId})=>{
 
       }
 }
-const getUserCourses = async (email)=>{
-   const query = `SELECT * from  COURSE where course_id in (SELECT course_id FROM UserCourses where email =?)`;
+const getUserCourses = async (userId)=>{
+   const query = `SELECT * from  Course where course_id in (SELECT course_id FROM UserCourse where user_id =?)`;
    try{
-      const res = await sql.query(query,[email]);
+      const res = await sql.query(query,[userId]);
       return res[0];
    }catch(err){
       throw err;

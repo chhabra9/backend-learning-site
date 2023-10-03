@@ -2,7 +2,7 @@ const sql = require('../config/db.config');
  
     const isEmailExist  =async (email)=>{
   
-    const isExistQuery = 'SELECT EXISTS(SELECT 1 FROM users WHERE email = ?) AS email_exists';
+    const isExistQuery = 'SELECT EXISTS(SELECT 1 FROM User WHERE email = ?) AS email_exists';
     try{
       const result =  await sql.query(isExistQuery,[email]);
       const emailExists = result[0][0].email_exists === 1;
@@ -19,7 +19,7 @@ const sql = require('../config/db.config');
 
  const createUser = async (user)=>{
     const createUserQuery = `
-    INSERT INTO users (first_name, last_name, email, password, street, city, state)
+    INSERT INTO User (first_name, last_name, email, password, street, city, state)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
   const values = [
@@ -37,7 +37,7 @@ const sql = require('../config/db.config');
 
 
 const getUser = async(email)=>{
-  const getUserQuery = `SELECT * FROM users WHERE email = ?`;
+  const getUserQuery = `SELECT * FROM User WHERE email = ?`;
   try{
     const result = await sql.query(getUserQuery,[email]);
     return result[0][0];
@@ -46,7 +46,7 @@ const getUser = async(email)=>{
   }
 }
 const getAllUsers = async(email)=>{
-  const getUserQuery = `SELECT * FROM users`;
+  const getUserQuery = `SELECT * FROM User`;
   try{
     const result = await sql.query(getUserQuery);
     return result[0]
@@ -54,14 +54,16 @@ const getAllUsers = async(email)=>{
     throw err;
   }
 }
-const makeUserInstructor = async(email)=>{
-  try{
-  const makeUserInstructorQuery = `UPDATE USERS
-  SET isInstructor = false;
-  where email =${email}`;
-    await sql.query(makeUserInstructorQuery,[email]);
-  }catch(err){
+const makeUserInstructor = async (userId) => {
+  try {
+    const makeUserInstructorQuery = `UPDATE User
+      SET isInstructor = true
+      WHERE user_id = ?`;
+    
+    await sql.query(makeUserInstructorQuery, [userId]);
+  } catch (err) {
+    console.error(err);
     throw err;
   }
-}
+};
 module.exports = {createUser, isEmailExist,getUser,getAllUsers,makeUserInstructor}
