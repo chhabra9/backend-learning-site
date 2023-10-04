@@ -16,11 +16,11 @@ const createNewCourseController = async(req,res)=>{
 }
 const getInstructorCoursesController = async(req,res)=>{
     try{
-        const isExist = await isInstructorExist(req.params.instructorId);
+        const isExist = await isInstructorExist(req.params.instructor_id);
         if(!isExist){
             return res.status(401).json("Instructor Not exist");
         }
-        const result = await getInstructorCourses(req.params.instructorId);
+        const result = await getInstructorCourses(req.params.instructor_id);
         return res.status(200).json(result);
     }catch(err){
         return res.status(500).json('Internal Server Error');

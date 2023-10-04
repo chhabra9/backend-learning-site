@@ -10,7 +10,7 @@ const {
  } = require('../controller/course.controller');
 
 router.post('/',createNewCourseController);
-router.get('/instructor/:instructorId',verifyTokenAndInstructor,getInstructorCoursesController);
+router.get('/instructor/:instructor_id',verifyTokenAndInstructor,getInstructorCoursesController);
 router.get('/',getAllCoursesController);
 router.get('/:courseId',getCourseWithCourseIdController);
 

@@ -13,10 +13,6 @@ const createPayementIntentController  = async(req,res)=>{
 }
 const createCheckOutSessionController =  async (req, res) => {
 try{
-  let courseIds =req.body.courses.map((item)=>{
-    return item.course_id
-  })
-  let sCourseIds = JSON.stringify(courseIds);
     const data = req.body.courses.map((item)=>{
         return {
             price_data: {
@@ -40,7 +36,7 @@ try{
         cancel_url: 'http://localhost:4200',
         metadata:{
             userId:req.params.user_id,
-             course_ids:sCourseIds,
+             courses:JSON.stringify(req.body.courses),
         }
       });
     res.status(200).json({url:session.url})
@@ -48,28 +44,28 @@ try{
         res.status(500).json(err.message)
     }
   };
+  
   const webHookController = async(request,response)=> {
     const event = request.body;
-  let checkout;
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object;
-        break;
-      case 'payment_method.attached':
-        const paymentMethod = event.data.object;
-        break;
-      case 'checkout.session.completed':
-         checkout = event.data.object;
-        break;
-      default:
+    let checkout;
+      switch (event.type) {
+        case 'payment_intent.succeeded':
+          const paymentIntent = event.data.object;
+          break;
+        case 'payment_method.attached':
+          const paymentMethod = event.data.object;
+          break;
+        case 'checkout.session.completed':
+          checkout = event.data.object;
+          break;
+        default:
     }
   
-    // Return a response to acknowledge receipt of the event
     response.json({received: true});
     if(checkout){
-        let courseId =JSON.parse( event.data.object.metadata.course_ids);
-        const userId = event.data.object.metadata.userId
-       await createUserCourses(userId,courseId);
+        let courseData =JSON.parse( event.data.object.metadata.courses);
+        const userId = event.data.object.metadata.userId;
+       await createUserCourses(userId,courseData);
     }
   };
 module.exports = {createPayementIntentController,createCheckOutSessionController,webHookController};

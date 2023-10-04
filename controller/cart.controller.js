@@ -11,6 +11,7 @@ const getAllCartItemsController = async(req,res)=>{
 }
 const updateCartController = async (req,res)=>{
     try{
+        console.log(req.body)
         await updateCart(req.params.user_id,req.body.courseIds);
         return res.status(200).json("Cart updated successfully");
     }catch(err){

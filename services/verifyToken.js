@@ -24,9 +24,11 @@ const verifyTokenAndUser = async(req,res,next)=>{
     })
 }
 const verifyTokenAndInstructor = async(req,res,next)=>{
+    console.log('----',req.params);
+    console.log(req.params.instructor_id)
     verifyToken(req,res,async ()=>{
             try{
-                const instructorId = req.params.instructorId
+                const instructorId = req.params.instructor_id
                 const isExist = await isInstructorExist(instructorId);
                 if(isExist)
                     next();
